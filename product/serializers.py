@@ -12,7 +12,7 @@ class PriceSerializer(ModelSerializer):
 class EanSerializer(ModelSerializer):
 
     class Meta:
-        model = Eans
+        model = Ean
         fields = ('ean',)
 
 

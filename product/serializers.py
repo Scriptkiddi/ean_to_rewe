@@ -1,6 +1,6 @@
 __author__ = 'fritz'
 from rest_framework.serializers import ModelSerializer, StringRelatedField
-from .models import Product, Eans, Price
+from .models import Product, Ean, Price
 
 class PriceSerializer(ModelSerializer):
 

@@ -40,7 +40,8 @@ INSTALLED_APPS = (
     'rest_framework',
     'taggit',
     'watson',
-    'product'
+    'product',
+    'django_extensions'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -103,7 +104,7 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
+SHELL_PLUS = "ipython"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/

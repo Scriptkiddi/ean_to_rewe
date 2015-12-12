@@ -38,7 +38,9 @@ class ProductViewSet(ModelViewSet):
         products, prices, eans = gather_information(ean)
         if len(products) == 1:
             products[0].save()
+            prices[0].product = products[0]
             prices[0].save()
+            eans[0].product = products[0]
             eans[0].save()
         else:
             send_simple_message("fritz@otlinghaus.it", ["fritz@otlinghaus.it"], "Add Product", "Ean number where we can not auto generate something")

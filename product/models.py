@@ -7,16 +7,21 @@ import watson
 
 class Product(models.Model):
     name = models.CharField(max_length=256)
-    price = models.FloatField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
+    nan = models.CharField(max_length=32)
+    #image
+    #text
     tags = TaggableManager()
 
 
-class Product2Ean2Nan(models.Model):
-    ean = models.CharField(max_length=32)
-    nan = models.CharField(max_length=32)
-    product = models.ForeignKey("Product")
+class Price(models.Model):
+    price = models.FloatField(null=True, blank=True)
+    date = models.DateTimeField(auto_now_add=True)
+    product = models.ForeignKey("Product", related_name="prices")
 
-    class Meta:
-        unique_together = (('product', 'nan'),)
+
+class Ean(models.Model):
+    ean = models.CharField(max_length=32)
+    product = models.ForeignKey("Product", related_name="eans")
+
 watson.register(Product)

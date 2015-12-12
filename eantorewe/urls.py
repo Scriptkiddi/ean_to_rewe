@@ -20,6 +20,7 @@ from product.views import ProductViewSet
 
 router = routers.SimpleRouter()
 router.register('products', ProductViewSet, base_name="product")
+router.register('eans', ProductViewSet, base_name="ean")
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),

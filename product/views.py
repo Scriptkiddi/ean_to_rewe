@@ -2,10 +2,9 @@ from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
 # Create your views here.
 from .serializers import ProductSerializer
-from .models import Product
+from .models import Product, Price
 import watson
-from rest_framework.response import Response
-from rest_framework import status
+from .utils import get_rewe_price_for_product, gather_information, send_simple_message
 
 
 class ProductViewSet(ModelViewSet):
@@ -24,20 +23,25 @@ class ProductViewSet(ModelViewSet):
             return watson.filter(Product, query)
         if ean is not None:
             print(queryset)
-            queryset = queryset.filter(ean=ean)
+            queryset = queryset.filter(eans=ean)
+            if len(queryset) == 0:
+                self.send_mail_to_add_product(ean)
+            elif len(queryset) == 1:
+                self.update_price(queryset[0])
+            else:
+                send_simple_message("fritz@otlinghaus.it", ["fritz@otlinghaus.it"], "Error", "rewe stuff fuckup two products for 1 ean")
         if nan is not None:
             queryset = queryset.filter(nan=nan)
         return queryset
 
-    def create(self, request):
-        serializer = ProductSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            serializer_mapping =
-            return Response(serializer.data)
+    def send_mail_to_add_product(self, ean):
+        products, prices, eans = gather_information(ean)
+        if len(products) == 1:
+            products[0].save()
+            prices[0].save()
+            eans[0].save()
         else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            send_simple_message("fritz@otlinghaus.it", ["fritz@otlinghaus.it"], "Add Product", "Ean number where we can not auto generate something")
 
-
+    def update_price(self, product):
+        Price.objects.create(product=product, price=get_rewe_price_for_product(product.nan))

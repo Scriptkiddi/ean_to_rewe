@@ -25,11 +25,14 @@ class ProductViewSet(ModelViewSet):
             print(queryset)
             queryset = queryset.filter(eans=ean)
             if len(queryset) == 0:
-                self.send_mail_to_add_product(ean)
+                if self.send_mail_to_add_product(ean):
+                    queryset = Product.objects.all().filter(eans=ean)
+                else:
+                    send_simple_message("fritz@otlinghaus.it", ["fritz@otlinghaus.it", "maxweh@gmail.com"], "Add Product", "Ean number where we can not auto generate something")
             elif len(queryset) == 1:
                 self.update_price(queryset[0])
             else:
-                send_simple_message("fritz@otlinghaus.it", ["fritz@otlinghaus.it"], "Error", "rewe stuff fuckup two products for 1 ean")
+                send_simple_message("fritz@otlinghaus.it", ["fritz@otlinghaus.it", "maxweh@gmail.com"], "Error", "rewe stuff fuckup two products for 1 ean")
         if nan is not None:
             queryset = queryset.filter(nan=nan)
         return queryset
@@ -42,8 +45,9 @@ class ProductViewSet(ModelViewSet):
             prices[0].save()
             eans[0].product = products[0]
             eans[0].save()
-        else:
-            send_simple_message("fritz@otlinghaus.it", ["fritz@otlinghaus.it"], "Add Product", "Ean number where we can not auto generate something")
+            return True
+        return False
+
 
     def update_price(self, product):
         Price.objects.create(product=product, price=get_rewe_price_for_product(product.nan))

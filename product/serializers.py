@@ -18,6 +18,7 @@ class EanSerializer(ModelSerializer):
 
 class ProductSerializer(ModelSerializer):
     eans = EanSerializer(many=True)
+    prices = PriceSerializer(many=True)
 
     class Meta:
         model = Product

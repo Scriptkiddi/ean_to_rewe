@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import raven
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,7 +42,8 @@ INSTALLED_APPS = (
     'taggit',
     'watson',
     'product',
-    'django_extensions'
+    'django_extensions',
+    'raven.contrib.django.raven_compat'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -91,6 +93,13 @@ DATABASES = {
         }
     }
 
+
+RAVEN_CONFIG = {
+    'dsn': os.environ['SENTRY_URL'],
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    'release': raven.fetch_git_sha(os.path.dirname(__file__)),
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
